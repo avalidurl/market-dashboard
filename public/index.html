@@ -13,8 +13,8 @@
       --bg-card: #111;
       --bg-accent: #1a1a1a;
       --text: #e8e4df;
-      --text-dim: #6b6860;
-      --text-muted: #3d3a35;
+      --text-dim: #9a948c;
+      --text-muted: #5a554d;
       --border: #252320;
       --accent: #f0c674;
       --up: #7dcea0;
@@ -27,8 +27,8 @@
       font-family: 'DM Mono', monospace;
       background: var(--bg);
       color: var(--text);
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 14px;
+      line-height: 1.6;
       min-height: 100vh;
     }
 
@@ -198,23 +198,23 @@
 
     .section-title {
       font-family: 'Syne', sans-serif;
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
 
     .section-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--text-dim);
       letter-spacing: 1px;
     }
 
     .section-explainer {
-      font-size: 12px;
+      font-size: 14px;
       color: var(--text-dim);
-      max-width: 800px;
-      line-height: 1.6;
+      max-width: 900px;
+      line-height: 1.7;
     }
 
     .data-table {
@@ -225,7 +225,7 @@
 
     .data-row {
       display: grid;
-      grid-template-columns: 200px 1fr 120px 120px 100px 180px;
+      grid-template-columns: 340px 1fr 120px 120px 100px 200px;
       background: var(--bg);
       transition: background 0.15s ease;
     }
@@ -239,15 +239,15 @@
     }
 
     .data-row.header-row .data-cell {
-      font-size: 9px;
-      color: var(--text-muted);
+      font-size: 11px;
+      color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      padding: 12px 16px;
+      padding: 14px 20px;
     }
 
     .data-cell {
-      padding: 16px;
+      padding: 20px;
       display: flex;
       align-items: center;
       border-right: 1px solid var(--border);
@@ -271,32 +271,32 @@
 
     .ticker {
       font-family: 'Syne', sans-serif;
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 700;
       letter-spacing: -0.5px;
     }
 
     .ticker-name {
-      font-size: 10px;
+      font-size: 13px;
       color: var(--text-dim);
     }
 
     .ticker-desc {
-      font-size: 10px;
-      color: var(--text-muted);
-      line-height: 1.4;
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.5;
     }
 
     .price-cell {
       font-family: 'Syne', sans-serif;
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 600;
       letter-spacing: -0.5px;
     }
 
     .change-cell {
       justify-content: flex-end;
-      font-size: 12px;
+      font-size: 15px;
       font-weight: 500;
     }
 
@@ -305,29 +305,31 @@
 
     .ytd-cell {
       justify-content: flex-end;
+      font-size: 15px;
     }
 
     .volume-cell {
       justify-content: flex-end;
       color: var(--text-dim);
+      font-size: 14px;
     }
 
     .range-cell {
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
     .range-bar-container {
       width: 100%;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .range-val {
-      font-size: 9px;
-      color: var(--text-muted);
-      width: 40px;
+      font-size: 11px;
+      color: var(--text-dim);
+      width: 44px;
     }
 
     .range-val.high {
@@ -336,9 +338,9 @@
 
     .range-bar {
       flex: 1;
-      height: 3px;
+      height: 6px;
       background: var(--bg-accent);
-      border-radius: 2px;
+      border-radius: 3px;
       position: relative;
     }
 
@@ -348,15 +350,15 @@
       top: 0;
       height: 100%;
       background: linear-gradient(90deg, var(--down) 0%, var(--text-muted) 50%, var(--up) 100%);
-      border-radius: 2px;
-      opacity: 0.4;
+      border-radius: 3px;
+      opacity: 0.5;
     }
 
     .range-marker {
       position: absolute;
       top: 50%;
-      width: 9px;
-      height: 9px;
+      width: 12px;
+      height: 12px;
       background: var(--text);
       border-radius: 50%;
       transform: translate(-50%, -50%);
@@ -373,43 +375,43 @@
 
     .legend-title {
       font-family: 'Syne', sans-serif;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 16px;
-      color: var(--text-dim);
+      margin-bottom: 20px;
+      color: var(--text);
     }
 
     .legend-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 16px;
     }
 
     .legend-item {
       display: flex;
-      gap: 12px;
-      padding: 12px;
+      gap: 16px;
+      padding: 16px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 6px;
     }
 
     .legend-term {
       font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      font-size: 11px;
+      font-weight: 700;
+      font-size: 13px;
       color: var(--accent);
-      min-width: 80px;
+      min-width: 90px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .legend-def {
-      font-size: 11px;
+      font-size: 13px;
       color: var(--text-dim);
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     footer {
@@ -450,9 +452,9 @@
 
     .vix-warning { color: var(--accent); }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1400px) {
       .data-row {
-        grid-template-columns: 180px 1fr 100px 100px 80px 160px;
+        grid-template-columns: 280px 1fr 100px 100px 90px 180px;
       }
     }
 
