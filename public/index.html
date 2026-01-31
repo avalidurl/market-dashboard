@@ -18,10 +18,7 @@
       --border: #252320;
       --accent: #f0c674;
       --up: #7dcea0;
-      --up-bg: rgba(125, 206, 160, 0.08);
       --down: #e57373;
-      --down-bg: rgba(229, 115, 115, 0.08);
-      --highlight: #f0c674;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,10 +30,8 @@
       font-size: 12px;
       line-height: 1.5;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    /* Grain overlay */
     body::before {
       content: '';
       position: fixed;
@@ -47,7 +42,6 @@
       z-index: 1000;
     }
 
-    /* Header */
     header {
       position: sticky;
       top: 0;
@@ -113,7 +107,6 @@
       50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(125, 206, 160, 0); }
     }
 
-    /* Hero */
     .hero {
       max-width: 1600px;
       margin: 0 auto;
@@ -156,6 +149,8 @@
       background: var(--bg);
       padding: 20px 28px;
       min-width: 140px;
+      cursor: help;
+      position: relative;
     }
 
     .hero-stat-label {
@@ -178,25 +173,27 @@
       margin-top: 4px;
     }
 
-    /* Main content */
     main {
       max-width: 1600px;
       margin: 0 auto;
       padding: 40px 32px;
     }
 
-    /* Section */
     .section {
       margin-bottom: 64px;
     }
 
     .section-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title-row {
       display: flex;
       align-items: baseline;
       gap: 16px;
-      margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
     }
 
     .section-title {
@@ -213,7 +210,13 @@
       letter-spacing: 1px;
     }
 
-    /* Data table */
+    .section-explainer {
+      font-size: 12px;
+      color: var(--text-dim);
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
     .data-table {
       display: grid;
       gap: 1px;
@@ -222,7 +225,7 @@
 
     .data-row {
       display: grid;
-      grid-template-columns: 160px 1fr 120px 140px 100px 180px;
+      grid-template-columns: 200px 1fr 120px 120px 100px 180px;
       background: var(--bg);
       transition: background 0.15s ease;
     }
@@ -257,7 +260,13 @@
     .ticker-cell {
       flex-direction: column;
       align-items: flex-start;
-      gap: 2px;
+      gap: 4px;
+    }
+
+    .ticker-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
     }
 
     .ticker {
@@ -270,6 +279,12 @@
     .ticker-name {
       font-size: 10px;
       color: var(--text-dim);
+    }
+
+    .ticker-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.4;
     }
 
     .price-cell {
@@ -297,7 +312,6 @@
       color: var(--text-dim);
     }
 
-    /* 52-week range */
     .range-cell {
       flex-direction: column;
       gap: 6px;
@@ -349,7 +363,55 @@
       box-shadow: 0 0 0 2px var(--bg);
     }
 
-    /* Footer */
+    /* Legend */
+    .legend {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 32px 32px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .legend-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      color: var(--text-dim);
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .legend-term {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--accent);
+      min-width: 80px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .legend-def {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
     footer {
       border-top: 1px solid var(--border);
       padding: 24px 32px;
@@ -363,7 +425,6 @@
       letter-spacing: 1px;
     }
 
-    /* Loading */
     .loading {
       display: flex;
       flex-direction: column;
@@ -387,10 +448,11 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Responsive */
+    .vix-warning { color: var(--accent); }
+
     @media (max-width: 1200px) {
       .data-row {
-        grid-template-columns: 140px 1fr 100px 120px 80px 160px;
+        grid-template-columns: 180px 1fr 100px 100px 80px 160px;
       }
     }
 
@@ -400,29 +462,14 @@
         gap: 32px;
         padding: 40px 20px 32px;
       }
-
-      .hero-right {
-        flex-wrap: wrap;
-      }
-
-      .header-inner, main, footer {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-
+      .hero-right { flex-wrap: wrap; }
+      .header-inner, main, footer, .legend { padding-left: 20px; padding-right: 20px; }
       .data-row {
         grid-template-columns: 1fr 1fr;
         gap: 1px;
       }
-
-      .data-row.header-row {
-        display: none;
-      }
-
-      .data-cell {
-        padding: 12px;
-      }
-
+      .data-row.header-row { display: none; }
+      .data-cell { padding: 12px; }
       .ticker-cell {
         grid-column: span 2;
         flex-direction: row;
@@ -430,15 +477,9 @@
         align-items: center;
         background: var(--bg-accent);
       }
-
-      .range-cell {
-        grid-column: span 2;
-      }
-    }
-
-    /* Special VIX styling */
-    .vix-warning {
-      color: var(--accent);
+      .ticker-desc { display: none; }
+      .range-cell { grid-column: span 2; }
+      .legend-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -471,17 +512,82 @@
     </div>
   </main>
 
+  <section class="legend">
+    <h3 class="legend-title">Reading the Data</h3>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <span class="legend-term">Price</span>
+        <span class="legend-def">Current ETF share price in USD. ETFs track underlying assets (indices, bonds, commodities).</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-term">Change</span>
+        <span class="legend-def">Today's price movement vs yesterday's close. <span class="up">Green = up</span>, <span class="down">Red = down</span>.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-term">YTD</span>
+        <span class="legend-def">Year-to-date return since Jan 1. Shows how the asset has performed this calendar year.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-term">Volume</span>
+        <span class="legend-def">Number of shares traded today. High volume = more market interest/activity.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-term">52W Range</span>
+        <span class="legend-def">Where current price sits between its yearly low and high. Dot near right = near 52-week high.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-term">VIX</span>
+        <span class="legend-def">The "fear index". Below 15 = calm markets. 15-25 = normal. Above 25 = elevated fear/volatility.</span>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <span>Data via Yahoo Finance • 15 min delay</span>
     <span>Built with Cloudflare Workers</span>
   </footer>
 
   <script>
+    const TICKER_INFO = {
+      'SPX': { desc: 'Tracks 500 largest US companies. The benchmark for US stock market health.' },
+      'NDX': { desc: 'Top 100 Nasdaq stocks, heavily weighted toward tech giants (Apple, Microsoft, etc).' },
+      'DJI': { desc: '30 blue-chip US companies. The oldest stock index, price-weighted.' },
+      'RUT': { desc: '2000 small-cap US stocks. Indicator of domestic economic health.' },
+      'EFA': { desc: 'Developed markets outside US (Europe, Japan, Australia). International diversification.' },
+      'EEM': { desc: 'Emerging markets (China, India, Brazil). Higher risk, higher growth potential.' },
+      'VIX': { desc: 'Measures expected S&P 500 volatility. Spikes during market fear/uncertainty.' },
+      'TLT': { desc: '20+ year US Treasury bonds. Safe haven asset, moves inverse to interest rates.' },
+      'IEF': { desc: '7-10 year Treasuries. Medium duration, less rate-sensitive than TLT.' },
+      'HYG': { desc: 'High-yield "junk" bonds. Higher returns but more credit risk.' },
+      'LQD': { desc: 'Investment-grade corporate bonds. Safer than HYG, lower yields.' },
+      'GLD': { desc: 'Gold bullion. Inflation hedge and safe haven during uncertainty.' },
+      'SLV': { desc: 'Silver bullion. Industrial metal + precious metal. More volatile than gold.' },
+      'OIL': { desc: 'Crude oil futures. Reflects global energy demand and supply.' },
+      'GAS': { desc: 'Natural gas futures. Seasonal demand, weather-sensitive.' },
+      'DXY': { desc: 'US Dollar strength vs basket of currencies. Strong dollar = headwind for exports.' },
+    };
+
     const SECTIONS = {
-      indices: { title: 'Equities', subtitle: 'Major indices' },
-      volatility: { title: 'Volatility', subtitle: 'Fear gauge' },
-      bonds: { title: 'Fixed Income', subtitle: 'Treasury & corporate' },
-      commodities: { title: 'Commodities', subtitle: 'Materials & FX' }
+      indices: {
+        title: 'Equities',
+        subtitle: 'Stock market indices',
+        explainer: 'Stock indices measure the performance of a basket of stocks. When SPX (S&P 500) is up, the broad US market is rising. Compare US indices to international (EFA, EEM) to see if the rally is global or US-specific.'
+      },
+      volatility: {
+        title: 'Volatility',
+        subtitle: 'Market fear gauge',
+        explainer: 'VIX measures how much volatility traders expect in the next 30 days. Low VIX (below 15) means complacency. High VIX (above 25) signals fear. VIX typically spikes during sell-offs and declines during rallies.'
+      },
+      bonds: {
+        title: 'Fixed Income',
+        subtitle: 'Treasury & corporate bonds',
+        explainer: 'Bond prices move inversely to interest rates. TLT falling = rates rising. In "risk-off" markets, money flows from stocks to bonds (TLT up). Compare HYG to LQD to gauge credit risk appetite.'
+      },
+      commodities: {
+        title: 'Commodities',
+        subtitle: 'Raw materials & currencies',
+        explainer: 'Gold rises during uncertainty and inflation fears. Oil reflects global growth expectations. DXY (dollar) strength hurts commodities priced in dollars and US exporters.'
+      }
     };
 
     function fmt(n, d = 2) {
@@ -509,11 +615,16 @@
       const range = q.fiftyTwoWeekHigh - q.fiftyTwoWeekLow;
       const pos = range > 0 ? ((q.regularMarketPrice - q.fiftyTwoWeekLow) / range) * 100 : 50;
 
+      const info = TICKER_INFO[q.symbol] || {};
+
       return `
         <div class="data-row">
           <div class="data-cell ticker-cell">
-            <span class="ticker">${q.symbol}</span>
-            <span class="ticker-name">${q.displayName}</span>
+            <div class="ticker-top">
+              <span class="ticker">${q.symbol}</span>
+              <span class="ticker-name">${q.displayName}</span>
+            </div>
+            <span class="ticker-desc">${info.desc || ''}</span>
           </div>
           <div class="data-cell price-cell">${fmt(q.regularMarketPrice)}</div>
           <div class="data-cell change-cell ${cls}">${sign}${fmt(chg)}%</div>
@@ -551,8 +662,11 @@
       return `
         <section class="section">
           <div class="section-header">
-            <h2 class="section-title">${cfg.title}</h2>
-            <span class="section-subtitle">${cfg.subtitle}</span>
+            <div class="section-title-row">
+              <h2 class="section-title">${cfg.title}</h2>
+              <span class="section-subtitle">${cfg.subtitle}</span>
+            </div>
+            <p class="section-explainer">${cfg.explainer}</p>
           </div>
           <div class="data-table">
             ${headerRow}
@@ -574,7 +688,7 @@
         const cls = spx.regularMarketChangePercent >= 0 ? 'up' : 'down';
         const sign = spx.regularMarketChangePercent >= 0 ? '+' : '';
         html += `
-          <div class="hero-stat">
+          <div class="hero-stat" title="S&P 500: The benchmark for US large-cap stocks">
             <div class="hero-stat-label">S&P 500</div>
             <div class="hero-stat-value">${fmt(spx.regularMarketPrice, 0)}</div>
             <div class="hero-stat-change ${cls}">${sign}${fmt(spx.regularMarketChangePercent)}%</div>
@@ -584,9 +698,9 @@
 
       if (vix) {
         const level = vix.regularMarketPrice > 25 ? 'vix-warning' : vix.regularMarketPrice > 18 ? '' : 'up';
-        const label = vix.regularMarketPrice > 25 ? 'Elevated' : vix.regularMarketPrice > 18 ? 'Normal' : 'Low';
+        const label = vix.regularMarketPrice > 25 ? 'High Fear' : vix.regularMarketPrice > 18 ? 'Normal' : 'Low Fear';
         html += `
-          <div class="hero-stat">
+          <div class="hero-stat" title="VIX: Expected 30-day volatility. Above 25 = fear, below 15 = calm">
             <div class="hero-stat-label">VIX</div>
             <div class="hero-stat-value ${level}">${fmt(vix.regularMarketPrice, 1)}</div>
             <div class="hero-stat-change">${label}</div>
@@ -598,7 +712,7 @@
         const cls = tlt.regularMarketChangePercent >= 0 ? 'up' : 'down';
         const sign = tlt.regularMarketChangePercent >= 0 ? '+' : '';
         html += `
-          <div class="hero-stat">
+          <div class="hero-stat" title="TLT: Long-term Treasury bonds. Safe haven, moves inverse to rates">
             <div class="hero-stat-label">Bonds</div>
             <div class="hero-stat-value">${fmt(tlt.regularMarketPrice, 0)}</div>
             <div class="hero-stat-change ${cls}">${sign}${fmt(tlt.regularMarketChangePercent)}%</div>
@@ -610,7 +724,7 @@
         const cls = gld.regularMarketChangePercent >= 0 ? 'up' : 'down';
         const sign = gld.regularMarketChangePercent >= 0 ? '+' : '';
         html += `
-          <div class="hero-stat">
+          <div class="hero-stat" title="Gold: Inflation hedge and safe haven during uncertainty">
             <div class="hero-stat-label">Gold</div>
             <div class="hero-stat-value">${fmt(gld.regularMarketPrice, 0)}</div>
             <div class="hero-stat-change ${cls}">${sign}${fmt(gld.regularMarketChangePercent)}%</div>
