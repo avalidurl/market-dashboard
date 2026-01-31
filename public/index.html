@@ -3,65 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Global Markets Dashboard</title>
+  <title>MarketPulse - Global Markets at a Glance</title>
+  <meta name="description" content="Real-time global market dashboard. Track stocks, bonds, commodities, and volatility in one place.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #111111;
-      --bg-tertiary: #1a1a1a;
-      --bg-card: #151515;
-      --border: #2a2a2a;
-      --text-primary: #e0e0e0;
-      --text-secondary: #888888;
-      --text-muted: #555555;
-      --green: #00c853;
-      --green-bg: rgba(0, 200, 83, 0.1);
-      --red: #ff1744;
-      --red-bg: rgba(255, 23, 68, 0.1);
-      --orange: #ff9100;
-      --blue: #2196f3;
-      --yellow: #ffd600;
+      --bg-base: #09090b;
+      --bg-elevated: #18181b;
+      --bg-subtle: #27272a;
+      --border: #3f3f46;
+      --border-subtle: #27272a;
+      --text: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --green: #22c55e;
+      --green-subtle: rgba(34, 197, 94, 0.15);
+      --red: #ef4444;
+      --red-subtle: rgba(239, 68, 68, 0.15);
+      --blue: #3b82f6;
+      --yellow: #eab308;
+      --orange: #f97316;
+      --purple: #a855f7;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-base);
+      color: var(--text);
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
+      min-height: 100vh;
     }
 
-    .header {
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(9, 9, 11, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 100;
+    }
+
+    .nav-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
     }
 
-    .header h1 {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .header-info {
+    .logo {
       display: flex;
-      gap: 20px;
-      color: var(--text-secondary);
-      font-size: 13px;
       align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
     }
 
-    .status { display: flex; align-items: center; gap: 6px; }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-elevated);
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+    }
 
     .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
+      width: 8px;
+      height: 8px;
       background: var(--green);
+      border-radius: 50%;
       animation: pulse 2s infinite;
     }
 
@@ -70,125 +108,161 @@
       50% { opacity: 0.5; }
     }
 
-    /* Market Summary Banner */
-    .summary-banner {
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      padding: 20px 24px;
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-base) 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 48px 24px;
     }
 
-    .summary-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .summary-title.positive { color: var(--green); }
-    .summary-title.negative { color: var(--red); }
-    .summary-title.neutral { color: var(--text-secondary); }
-
-    .summary-description {
-      color: var(--text-secondary);
-      font-size: 15px;
-      max-width: 800px;
-    }
-
-    .sentiment-badges {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .badge.positive { background: var(--green-bg); color: var(--green); }
-    .badge.negative { background: var(--red-bg); color: var(--red); }
-    .badge.neutral { background: var(--bg-tertiary); color: var(--text-secondary); }
-
-    /* Main Container */
-    .container {
-      padding: 24px;
+    .hero-content {
       max-width: 1400px;
       margin: 0 auto;
     }
 
-    .section {
+    .market-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .market-status.positive { background: var(--green-subtle); color: var(--green); }
+    .market-status.negative { background: var(--red-subtle); color: var(--red); }
+    .market-status.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
+
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
       margin-bottom: 32px;
+    }
+
+    .key-metrics {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .key-metric {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px 24px;
+      min-width: 180px;
+    }
+
+    .key-metric-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .key-metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .key-metric-change {
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .section {
+      margin-bottom: 48px;
     }
 
     .section-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title-group {
+      display: flex;
+      align-items: center;
       gap: 12px;
-      margin-bottom: 16px;
     }
 
     .section-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 20px;
     }
 
-    .section-icon.indices { background: rgba(33, 150, 243, 0.2); }
-    .section-icon.bonds { background: rgba(255, 214, 0, 0.2); }
-    .section-icon.volatility { background: rgba(255, 23, 68, 0.2); }
-    .section-icon.commodities { background: rgba(255, 145, 0, 0.2); }
+    .section-icon.indices { background: rgba(59, 130, 246, 0.15); }
+    .section-icon.volatility { background: rgba(239, 68, 68, 0.15); }
+    .section-icon.bonds { background: rgba(234, 179, 8, 0.15); }
+    .section-icon.commodities { background: rgba(249, 115, 22, 0.15); }
 
     .section-title {
-      font-size: 16px;
+      font-size: 20px;
       font-weight: 600;
     }
 
     .section-subtitle {
-      font-size: 13px;
-      color: var(--text-secondary);
+      font-size: 14px;
+      color: var(--text-muted);
     }
 
-    .cards {
+    /* Cards Grid */
+    .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
     }
 
     .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      transition: border-color 0.2s;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.2s ease;
     }
 
     .card:hover {
-      border-color: #444;
+      border-color: var(--border);
+      transform: translateY(-2px);
     }
 
-    .card.positive { border-left: 3px solid var(--green); }
-    .card.negative { border-left: 3px solid var(--red); }
-
-    .card-top {
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .card-symbol {
-      font-size: 18px;
-      font-weight: 700;
-      font-family: 'SF Mono', Monaco, monospace;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 600;
     }
 
     .card-name {
@@ -197,50 +271,73 @@
       margin-top: 2px;
     }
 
-    .card-price {
+    .card-price-group {
       text-align: right;
     }
 
-    .price-value {
-      font-size: 20px;
+    .card-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
       font-weight: 600;
-      font-family: 'SF Mono', Monaco, monospace;
     }
 
-    .price-change {
-      font-size: 13px;
+    .card-change {
+      font-size: 14px;
       font-weight: 500;
       margin-top: 2px;
     }
 
-    .price-change.positive { color: var(--green); }
-    .price-change.negative { color: var(--red); }
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
 
-    .card-description {
-      font-size: 12px;
-      color: var(--text-muted);
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      line-height: 1.5;
+    /* Card Metrics */
+    .card-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
     }
 
-    .card-range {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* 52-Week Range Bar */
+    .range-container {
+      grid-column: span 2;
+      margin-top: 4px;
     }
 
     .range-label {
       font-size: 11px;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
     }
 
     .range-bar {
-      height: 4px;
-      background: var(--bg-tertiary);
-      border-radius: 2px;
+      height: 6px;
+      background: var(--bg-subtle);
+      border-radius: 3px;
       position: relative;
+      overflow: visible;
     }
 
     .range-fill {
@@ -248,363 +345,366 @@
       left: 0;
       top: 0;
       height: 100%;
-      background: var(--blue);
-      border-radius: 2px;
+      background: linear-gradient(90deg, var(--red), var(--yellow), var(--green));
+      border-radius: 3px;
+      opacity: 0.3;
     }
 
     .range-marker {
       position: absolute;
-      top: -3px;
-      width: 10px;
-      height: 10px;
-      background: var(--text-primary);
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      background: var(--text);
+      border: 2px solid var(--bg-elevated);
       border-radius: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .range-values {
       display: flex;
       justify-content: space-between;
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
-    /* Help Legend */
-    .legend {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 24px;
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 32px 24px;
+      margin-top: 48px;
     }
 
-    .legend-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .legend-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 12px;
-    }
-
-    .legend-item {
-      display: flex;
-      gap: 10px;
+    .footer-info {
+      color: var(--text-muted);
       font-size: 13px;
     }
 
-    .legend-color {
-      width: 4px;
-      border-radius: 2px;
-      flex-shrink: 0;
+    .footer-links {
+      display: flex;
+      gap: 24px;
     }
 
-    .legend-color.green { background: var(--green); }
-    .legend-color.red { background: var(--red); }
-    .legend-color.blue { background: var(--blue); }
-    .legend-color.yellow { background: var(--yellow); }
-
-    .legend-text strong {
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .legend-text span {
+    .footer-links a {
       color: var(--text-secondary);
-      font-size: 12px;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
     }
 
-    .footer {
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--border);
-      padding: 16px 24px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
+    .footer-links a:hover {
+      color: var(--text);
     }
 
+    /* Loading State */
     .loading {
-      text-align: center;
-      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px;
       color: var(--text-secondary);
     }
 
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border-subtle);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      .header { padding: 12px 16px; }
-      .summary-banner { padding: 16px; }
-      .container { padding: 16px; }
-      .cards { grid-template-columns: 1fr; }
-      .legend-grid { grid-template-columns: 1fr; }
+      .hero { padding: 32px 16px; }
+      .hero h1 { font-size: 28px; }
+      .hero-subtitle { font-size: 16px; }
+      main { padding: 24px 16px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .key-metrics { gap: 12px; }
+      .key-metric { min-width: 140px; padding: 12px 16px; }
+      .key-metric-value { font-size: 20px; }
+      .nav-status span:not(.status-badge) { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Global Markets Dashboard</h1>
-    <div class="header-info">
-      <div class="status">
-        <div class="status-dot" id="statusDot"></div>
-        <span id="statusText">Live</span>
+  <nav>
+    <div class="nav-content">
+      <div class="logo">
+        <div class="logo-icon">📊</div>
+        <span>MarketPulse</span>
       </div>
-      <div id="lastUpdate">--:--</div>
-    </div>
-  </div>
-
-  <div class="summary-banner" id="summaryBanner">
-    <div class="summary-title neutral" id="summaryTitle">Loading market data...</div>
-    <div class="summary-description" id="summaryDesc"></div>
-    <div class="sentiment-badges" id="sentimentBadges"></div>
-  </div>
-
-  <div class="container">
-    <div class="legend">
-      <div class="legend-title">📖 How to read this dashboard</div>
-      <div class="legend-grid">
-        <div class="legend-item">
-          <div class="legend-color green"></div>
-          <div class="legend-text">
-            <strong>Green = Up</strong>
-            <span>Price increased from yesterday's close</span>
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color red"></div>
-          <div class="legend-text">
-            <strong>Red = Down</strong>
-            <span>Price decreased from yesterday's close</span>
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color blue"></div>
-          <div class="legend-text">
-            <strong>Indices</strong>
-            <span>Track groups of stocks (like S&P 500 = top 500 US companies)</span>
-          </div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color yellow"></div>
-          <div class="legend-text">
-            <strong>Bonds</strong>
-            <span>Government/corporate debt. When prices fall, interest rates rise.</span>
-          </div>
+      <div class="nav-status">
+        <span id="lastUpdate">--</span>
+        <div class="status-badge">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Connecting...</span>
         </div>
       </div>
     </div>
+  </nav>
 
-    <div id="dashboard">
-      <div class="loading">Loading market data...</div>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="market-status neutral" id="marketStatus">Loading market data...</div>
+      <h1 id="heroTitle">Global Markets</h1>
+      <p class="hero-subtitle" id="heroSubtitle">Real-time overview of stocks, bonds, commodities, and market sentiment.</p>
+      <div class="key-metrics" id="keyMetrics"></div>
     </div>
-  </div>
+  </section>
 
-  <div class="footer">
-    Data from Yahoo Finance • Updates every 60 seconds • Prices may be delayed
-  </div>
+  <main id="main">
+    <div class="loading">
+      <div class="spinner"></div>
+      <span>Loading market data...</span>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-info">
+        Data from Yahoo Finance • Prices may be delayed up to 15 minutes
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/avalidurl/market-dashboard" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
     const DESCRIPTIONS = {
-      'SPX': 'Tracks the 500 largest US companies. The most-watched stock market benchmark in the world.',
-      'NDX': 'Tracks 100 largest non-financial companies on Nasdaq. Heavy in tech (Apple, Microsoft, Google).',
-      'DJI': 'Tracks 30 major US companies. The oldest stock index, dating back to 1896.',
-      'EFA': 'Tracks developed markets outside US (Europe, Japan, Australia).',
-      'EEM': 'Tracks emerging markets (China, Brazil, India, Taiwan). Higher risk, higher potential.',
-      'FXI': 'Tracks the 50 largest Chinese companies. Indicator of China\'s economy.',
-      'VIX': 'The "Fear Index". High values (>20) mean investors are nervous. Low (<15) means calm.',
-      'TLT': 'Long-term US government bonds. Falls when interest rates rise. Safe haven asset.',
-      'IEF': 'Medium-term US Treasury bonds. Less sensitive to rate changes than TLT.',
-      'SHY': 'Short-term Treasury bonds. Very stable, moves with Fed interest rate policy.',
-      'HYG': 'High-yield "junk" bonds. Higher risk corporate debt. Falls when economy looks weak.',
-      'LQD': 'Investment-grade corporate bonds. Safer than HYG, tracks healthy company debt.',
-      'GLD': 'Tracks gold price. Traditional safe haven. Rises during uncertainty & inflation.',
-      'USO': 'Tracks crude oil price. Rises with economic growth, geopolitical tensions.',
-      'DXY': 'US Dollar strength vs other currencies. High = strong dollar, affects global trade.',
-      'COPX': 'Copper miners. Copper is called "Dr. Copper" - predicts economic health.',
+      'SPX': 'Tracks 500 largest US companies',
+      'NDX': '100 largest Nasdaq stocks, tech-heavy',
+      'DJI': '30 major US industrial companies',
+      'RUT': '2000 small-cap US companies',
+      'EFA': 'Developed markets ex-US',
+      'EEM': 'Emerging markets equities',
+      'VIX': 'Market volatility / fear gauge',
+      'TLT': 'Long-term US Treasury bonds',
+      'IEF': 'Intermediate Treasury bonds',
+      'HYG': 'High-yield corporate bonds',
+      'LQD': 'Investment-grade corporate bonds',
+      'GLD': 'Gold price tracker',
+      'SLV': 'Silver price tracker',
+      'OIL': 'Crude oil prices',
+      'GAS': 'Natural gas prices',
+      'DXY': 'US Dollar strength index',
     };
 
     const SECTIONS = {
-      indices: {
-        title: 'Stock Market Indices',
-        subtitle: 'How major stock markets are performing',
-        icon: '📈'
-      },
-      bonds: {
-        title: 'Bonds & Interest Rates',
-        subtitle: 'Government and corporate debt markets',
-        icon: '🏦'
-      },
-      volatility: {
-        title: 'Market Fear Gauge',
-        subtitle: 'How nervous are investors right now?',
-        icon: '⚡'
-      },
-      commodities: {
-        title: 'Commodities & Currencies',
-        subtitle: 'Raw materials and the US dollar',
-        icon: '🛢️'
-      }
+      indices: { title: 'Equity Indices', subtitle: 'Stock market performance', icon: '📈' },
+      volatility: { title: 'Volatility', subtitle: 'Market fear & uncertainty', icon: '⚡' },
+      bonds: { title: 'Fixed Income', subtitle: 'Bond markets & rates', icon: '🏦' },
+      commodities: { title: 'Commodities & FX', subtitle: 'Raw materials & currencies', icon: '🛢️' }
     };
 
-    function formatNumber(num, decimals = 2) {
-      if (num === null || num === undefined) return '--';
-      return num.toLocaleString('en-US', {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals
-      });
+    function formatNum(n, d = 2) {
+      if (n == null) return '--';
+      return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
     }
 
-    function formatChange(change, pct) {
-      if (change === null || change === undefined) return { text: '--', class: 'neutral' };
-      const sign = change >= 0 ? '+' : '';
-      const cls = change > 0 ? 'positive' : change < 0 ? 'negative' : 'neutral';
-      return {
-        text: `${sign}${formatNumber(pct)}%`,
-        class: cls
-      };
+    function formatVol(n) {
+      if (n == null) return '--';
+      if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+      if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+      return n.toString();
     }
 
     function createCard(q) {
-      const change = formatChange(q.regularMarketChange, q.regularMarketChangePercent);
-      const price = q.regularMarketPrice;
-      const description = DESCRIPTIONS[q.symbol] || '';
+      const changePct = q.regularMarketChangePercent;
+      const cls = changePct > 0 ? 'positive' : changePct < 0 ? 'negative' : '';
+      const sign = changePct >= 0 ? '+' : '';
+
+      // 52-week range position
+      const range52 = q.fiftyTwoWeekHigh - q.fiftyTwoWeekLow;
+      const pos52 = range52 > 0 ? ((q.regularMarketPrice - q.fiftyTwoWeekLow) / range52) * 100 : 50;
+
+      const ytdCls = q.ytdChangePercent > 0 ? 'positive' : q.ytdChangePercent < 0 ? 'negative' : '';
+      const ytdSign = q.ytdChangePercent >= 0 ? '+' : '';
 
       return `
-        <div class="card ${change.class}">
-          <div class="card-top">
+        <div class="card">
+          <div class="card-header">
             <div>
               <div class="card-symbol">${q.symbol}</div>
               <div class="card-name">${q.displayName}</div>
             </div>
-            <div class="card-price">
-              <div class="price-value">${formatNumber(price)}</div>
-              <div class="price-change ${change.class}">${change.text} today</div>
+            <div class="card-price-group">
+              <div class="card-price">${formatNum(q.regularMarketPrice)}</div>
+              <div class="card-change ${cls}">${sign}${formatNum(changePct)}% today</div>
             </div>
           </div>
-          <div class="card-description">${description}</div>
+          <div class="card-metrics">
+            <div class="metric">
+              <span class="metric-label">Day Range</span>
+              <span class="metric-value">${formatNum(q.regularMarketDayLow)} - ${formatNum(q.regularMarketDayHigh)}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">YTD</span>
+              <span class="metric-value ${ytdCls}">${q.ytdChangePercent != null ? ytdSign + formatNum(q.ytdChangePercent) + '%' : '--'}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Volume</span>
+              <span class="metric-value">${formatVol(q.regularMarketVolume)}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Prev Close</span>
+              <span class="metric-value">${formatNum(q.regularMarketPreviousClose)}</span>
+            </div>
+            <div class="range-container">
+              <div class="range-label">52-Week Range</div>
+              <div class="range-bar">
+                <div class="range-fill" style="width: 100%"></div>
+                <div class="range-marker" style="left: ${Math.min(100, Math.max(0, pos52))}%"></div>
+              </div>
+              <div class="range-values">
+                <span>${formatNum(q.fiftyTwoWeekLow)}</span>
+                <span>${formatNum(q.fiftyTwoWeekHigh)}</span>
+              </div>
+            </div>
+          </div>
         </div>
       `;
     }
 
     function createSection(id, quotes) {
-      const config = SECTIONS[id];
-      if (!config || quotes.length === 0) return '';
+      const cfg = SECTIONS[id];
+      if (!cfg || !quotes.length) return '';
 
       return `
-        <div class="section">
+        <section class="section">
           <div class="section-header">
-            <div class="section-icon ${id}">${config.icon}</div>
-            <div>
-              <div class="section-title">${config.title}</div>
-              <div class="section-subtitle">${config.subtitle}</div>
+            <div class="section-title-group">
+              <div class="section-icon ${id}">${cfg.icon}</div>
+              <div>
+                <div class="section-title">${cfg.title}</div>
+                <div class="section-subtitle">${cfg.subtitle}</div>
+              </div>
             </div>
           </div>
-          <div class="cards">
-            ${quotes.map(q => createCard(q)).join('')}
-          </div>
-        </div>
+          <div class="cards-grid">${quotes.map(createCard).join('')}</div>
+        </section>
       `;
     }
 
-    function updateSummary(quotes) {
+    function updateHero(quotes) {
       const spx = quotes.find(q => q.symbol === 'SPX');
       const vix = quotes.find(q => q.symbol === 'VIX');
+      const tlt = quotes.find(q => q.symbol === 'TLT');
+      const gld = quotes.find(q => q.symbol === 'GLD');
 
-      let title = 'Markets are mixed today';
-      let titleClass = 'neutral';
-      let desc = '';
-      let badges = [];
-
+      // Market status
+      let status = 'Markets are mixed', statusCls = 'neutral';
       if (spx) {
         const pct = spx.regularMarketChangePercent;
-        if (pct > 1) {
-          title = 'Markets are UP significantly';
-          titleClass = 'positive';
-          desc = 'Stocks are rallying today. Investors are feeling optimistic.';
-        } else if (pct > 0) {
-          title = 'Markets are slightly UP';
-          titleClass = 'positive';
-          desc = 'Stocks are modestly higher. A relatively calm day in the markets.';
-        } else if (pct < -1) {
-          title = 'Markets are DOWN significantly';
-          titleClass = 'negative';
-          desc = 'Stocks are selling off today. Investors are cautious or pessimistic.';
-        } else if (pct < 0) {
-          title = 'Markets are slightly DOWN';
-          titleClass = 'negative';
-          desc = 'Stocks are modestly lower. Nothing unusual, markets fluctuate daily.';
-        }
-
-        badges.push(`<div class="badge ${pct >= 0 ? 'positive' : 'negative'}">S&P 500: ${pct >= 0 ? '+' : ''}${formatNumber(pct)}%</div>`);
+        if (pct > 1) { status = '📈 Markets rallying'; statusCls = 'positive'; }
+        else if (pct > 0) { status = '📈 Markets up'; statusCls = 'positive'; }
+        else if (pct < -1) { status = '📉 Markets selling off'; statusCls = 'negative'; }
+        else if (pct < 0) { status = '📉 Markets down'; statusCls = 'negative'; }
       }
 
+      const statusEl = document.getElementById('marketStatus');
+      statusEl.textContent = status;
+      statusEl.className = 'market-status ' + statusCls;
+
+      // Key metrics
+      let metrics = '';
+      if (spx) {
+        const cls = spx.regularMarketChangePercent >= 0 ? 'positive' : 'negative';
+        const sign = spx.regularMarketChangePercent >= 0 ? '+' : '';
+        metrics += `
+          <div class="key-metric">
+            <div class="key-metric-label">S&P 500</div>
+            <div class="key-metric-value">${formatNum(spx.regularMarketPrice)}</div>
+            <div class="key-metric-change ${cls}">${sign}${formatNum(spx.regularMarketChangePercent)}%</div>
+          </div>
+        `;
+      }
       if (vix) {
-        const vixVal = vix.regularMarketPrice;
-        let vixLabel = '';
-        let vixClass = 'neutral';
-
-        if (vixVal < 15) {
-          vixLabel = 'Very Low Fear';
-          vixClass = 'positive';
-        } else if (vixVal < 20) {
-          vixLabel = 'Low Fear';
-          vixClass = 'positive';
-        } else if (vixVal < 25) {
-          vixLabel = 'Moderate Fear';
-          vixClass = 'neutral';
-        } else if (vixVal < 30) {
-          vixLabel = 'High Fear';
-          vixClass = 'negative';
-        } else {
-          vixLabel = 'Extreme Fear';
-          vixClass = 'negative';
-        }
-
-        badges.push(`<div class="badge ${vixClass}">Fear Level: ${vixLabel} (${formatNumber(vixVal)})</div>`);
+        const cls = vix.regularMarketPrice > 25 ? 'negative' : vix.regularMarketPrice > 18 ? '' : 'positive';
+        const label = vix.regularMarketPrice > 25 ? 'High Fear' : vix.regularMarketPrice > 18 ? 'Elevated' : 'Low Fear';
+        metrics += `
+          <div class="key-metric">
+            <div class="key-metric-label">VIX (Fear)</div>
+            <div class="key-metric-value ${cls}">${formatNum(vix.regularMarketPrice)}</div>
+            <div class="key-metric-change">${label}</div>
+          </div>
+        `;
+      }
+      if (tlt) {
+        const cls = tlt.regularMarketChangePercent >= 0 ? 'positive' : 'negative';
+        const sign = tlt.regularMarketChangePercent >= 0 ? '+' : '';
+        metrics += `
+          <div class="key-metric">
+            <div class="key-metric-label">Bonds (TLT)</div>
+            <div class="key-metric-value">${formatNum(tlt.regularMarketPrice)}</div>
+            <div class="key-metric-change ${cls}">${sign}${formatNum(tlt.regularMarketChangePercent)}%</div>
+          </div>
+        `;
+      }
+      if (gld) {
+        const cls = gld.regularMarketChangePercent >= 0 ? 'positive' : 'negative';
+        const sign = gld.regularMarketChangePercent >= 0 ? '+' : '';
+        metrics += `
+          <div class="key-metric">
+            <div class="key-metric-label">Gold</div>
+            <div class="key-metric-value">${formatNum(gld.regularMarketPrice)}</div>
+            <div class="key-metric-change ${cls}">${sign}${formatNum(gld.regularMarketChangePercent)}%</div>
+          </div>
+        `;
       }
 
-      document.getElementById('summaryTitle').textContent = title;
-      document.getElementById('summaryTitle').className = 'summary-title ' + titleClass;
-      document.getElementById('summaryDesc').textContent = desc;
-      document.getElementById('sentimentBadges').innerHTML = badges.join('');
+      document.getElementById('keyMetrics').innerHTML = metrics;
     }
 
     async function fetchData() {
       try {
-        const response = await fetch('/api/quotes');
-        if (!response.ok) throw new Error('Failed to fetch');
-        const data = await response.json();
-
+        const res = await fetch('/api/quotes');
+        if (!res.ok) throw new Error('Fetch failed');
+        const data = await res.json();
         if (data.error) throw new Error(data.error);
 
         const quotes = data.quoteResponse?.result || [];
+        const sections = { indices: [], volatility: [], bonds: [], commodities: [] };
 
-        // Organize by section
-        const sections = { indices: [], bonds: [], volatility: [], commodities: [] };
         quotes.forEach(q => {
-          if (q.section && sections[q.section]) {
-            sections[q.section].push(q);
-          }
+          if (q.section && sections[q.section]) sections[q.section].push(q);
         });
 
-        // Render
-        const dashboard = document.getElementById('dashboard');
-        dashboard.innerHTML = ['indices', 'volatility', 'bonds', 'commodities']
-          .map(id => createSection(id, sections[id]))
-          .join('');
+        document.getElementById('main').innerHTML =
+          ['indices', 'volatility', 'bonds', 'commodities']
+            .map(id => createSection(id, sections[id]))
+            .join('');
 
-        updateSummary(quotes);
+        updateHero(quotes);
 
         document.getElementById('statusDot').style.background = 'var(--green)';
         document.getElementById('statusText').textContent = 'Live';
-        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('lastUpdate').textContent =
+          'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      } catch (error) {
-        console.error('Error:', error);
+      } catch (err) {
+        console.error(err);
         document.getElementById('statusDot').style.background = 'var(--red)';
         document.getElementById('statusText').textContent = 'Error';
       }
