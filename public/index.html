@@ -20,11 +20,7 @@
       --yellow: #ffd600;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
@@ -57,24 +53,16 @@
       font-size: 11px;
     }
 
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .status { display: flex; align-items: center; gap: 6px; }
 
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--green);
       animation: pulse 2s infinite;
     }
 
-    .status-dot.error {
-      background: var(--red);
-      animation: none;
-    }
+    .status-dot.error { background: var(--red); animation: none; }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
@@ -89,9 +77,7 @@
       padding: 1px;
     }
 
-    .section {
-      background: var(--bg-secondary);
-    }
+    .section { background: var(--bg-secondary); }
 
     .section-header {
       background: var(--bg-tertiary);
@@ -109,10 +95,7 @@
     .section-header.commodities { border-left: 3px solid var(--orange); }
     .section-header.volatility { border-left: 3px solid var(--red); }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    table { width: 100%; border-collapse: collapse; }
 
     th {
       text-align: left;
@@ -126,9 +109,7 @@
       border-bottom: 1px solid var(--border);
     }
 
-    th:not(:first-child) {
-      text-align: right;
-    }
+    th:not(:first-child) { text-align: right; }
 
     td {
       padding: 8px 12px;
@@ -140,48 +121,17 @@
       font-variant-numeric: tabular-nums;
     }
 
-    tr:hover {
-      background: var(--bg-tertiary);
-    }
+    tr:hover { background: var(--bg-tertiary); }
 
-    .symbol {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .name {
-      color: var(--text-secondary);
-      font-size: 10px;
-    }
-
-    .price {
-      font-weight: 600;
-    }
-
-    .change {
-      font-weight: 500;
-    }
-
+    .symbol { font-weight: 600; color: var(--text-primary); }
+    .name { color: var(--text-secondary); font-size: 10px; }
+    .price { font-weight: 600; }
+    .change { font-weight: 500; }
     .positive { color: var(--green); }
     .negative { color: var(--red); }
     .neutral { color: var(--text-secondary); }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--text-secondary);
-    }
-
-    .error-msg {
-      text-align: center;
-      padding: 20px;
-      color: var(--red);
-    }
-
-    .sparkline {
-      width: 60px;
-      height: 20px;
-    }
+    .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
 
     .footer {
       background: var(--bg-secondary);
@@ -193,31 +143,14 @@
       color: var(--text-muted);
     }
 
-    .key-metrics {
-      display: flex;
-      gap: 24px;
-    }
-
-    .metric {
-      display: flex;
-      gap: 8px;
-    }
-
-    .metric-label {
-      color: var(--text-muted);
-    }
-
-    .metric-value {
-      font-weight: 600;
-    }
+    .key-metrics { display: flex; gap: 24px; }
+    .metric { display: flex; gap: 8px; }
+    .metric-label { color: var(--text-muted); }
+    .metric-value { font-weight: 600; }
 
     @media (max-width: 768px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-      .header-info {
-        display: none;
-      }
+      .container { grid-template-columns: 1fr; }
+      .header-info { display: none; }
     }
   </style>
 </head>
@@ -239,30 +172,10 @@
 
   <div class="footer">
     <div class="key-metrics" id="keyMetrics"></div>
-    <div>Data: Yahoo Finance | Refresh: 60s</div>
+    <div>Data: Finnhub | Refresh: 60s</div>
   </div>
 
   <script>
-    const SYMBOL_META = {
-      '^GSPC': { name: 'S&P 500', section: 'indices' },
-      '^NDX': { name: 'Nasdaq 100', section: 'indices' },
-      '^DJI': { name: 'Dow Jones', section: 'indices' },
-      '^STOXX50E': { name: 'Euro Stoxx 50', section: 'indices' },
-      '^N225': { name: 'Nikkei 225', section: 'indices' },
-      '000001.SS': { name: 'Shanghai Comp', section: 'indices' },
-      '^TNX': { name: '10Y Treasury', section: 'bonds' },
-      '^TYX': { name: '30Y Treasury', section: 'bonds' },
-      '^IRX': { name: '3M T-Bill', section: 'bonds' },
-      'TLT': { name: '20Y+ Treasury ETF', section: 'bonds' },
-      'HYG': { name: 'High Yield Corp', section: 'bonds' },
-      'LQD': { name: 'Inv Grade Corp', section: 'bonds' },
-      '^VIX': { name: 'VIX', section: 'volatility' },
-      'DX-Y.NYB': { name: 'Dollar Index', section: 'commodities' },
-      'GC=F': { name: 'Gold', section: 'commodities' },
-      'CL=F': { name: 'Crude Oil WTI', section: 'commodities' },
-      'HG=F': { name: 'Copper', section: 'commodities' },
-    };
-
     const SECTIONS = {
       indices: 'Equity Indices',
       bonds: 'Rates & Credit',
@@ -295,11 +208,7 @@
         <div class="section-header ${id}">${title}</div>
         <table>
           <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Last</th>
-              <th>Change</th>
-            </tr>
+            <tr><th>Symbol</th><th>Last</th><th>Change</th></tr>
           </thead>
           <tbody>
             ${quotes.map(q => {
@@ -308,7 +217,7 @@
               return `
                 <tr>
                   <td>
-                    <div class="symbol">${q.displaySymbol}</div>
+                    <div class="symbol">${q.symbol}</div>
                     <div class="name">${q.displayName}</div>
                   </td>
                   <td class="price">${formatNumber(price, id === 'bonds' ? 3 : 2)}</td>
@@ -324,10 +233,10 @@
 
     function updateKeyMetrics(quotes) {
       const metrics = [];
-      const sp500 = quotes.find(q => q.symbol === '^GSPC');
-      const vix = quotes.find(q => q.symbol === '^VIX');
-      const tny = quotes.find(q => q.symbol === '^TNX');
-      const dxy = quotes.find(q => q.symbol === 'DX-Y.NYB');
+      const sp500 = quotes.find(q => q.symbol === 'SPX');
+      const vix = quotes.find(q => q.symbol === 'VIX');
+      const tlt = quotes.find(q => q.symbol === 'TLT');
+      const uup = quotes.find(q => q.symbol === 'UUP');
 
       if (sp500) {
         const cls = sp500.regularMarketChangePercent >= 0 ? 'positive' : 'negative';
@@ -337,11 +246,11 @@
         const cls = vix.regularMarketPrice > 20 ? 'negative' : 'positive';
         metrics.push(`<div class="metric"><span class="metric-label">VIX:</span><span class="metric-value ${cls}">${formatNumber(vix.regularMarketPrice)}</span></div>`);
       }
-      if (tny) {
-        metrics.push(`<div class="metric"><span class="metric-label">10Y:</span><span class="metric-value">${formatNumber(tny.regularMarketPrice, 3)}%</span></div>`);
+      if (tlt) {
+        metrics.push(`<div class="metric"><span class="metric-label">TLT:</span><span class="metric-value">${formatNumber(tlt.regularMarketPrice)}</span></div>`);
       }
-      if (dxy) {
-        metrics.push(`<div class="metric"><span class="metric-label">DXY:</span><span class="metric-value">${formatNumber(dxy.regularMarketPrice)}</span></div>`);
+      if (uup) {
+        metrics.push(`<div class="metric"><span class="metric-label">DXY:</span><span class="metric-value">${formatNumber(uup.regularMarketPrice)}</span></div>`);
       }
 
       document.getElementById('keyMetrics').innerHTML = metrics.join('');
@@ -361,13 +270,8 @@
         const sections = { indices: [], bonds: [], volatility: [], commodities: [] };
 
         quotes.forEach(q => {
-          const meta = SYMBOL_META[q.symbol];
-          if (meta) {
-            sections[meta.section].push({
-              ...q,
-              displaySymbol: q.symbol.replace('^', ''),
-              displayName: meta.name
-            });
+          if (q.section && sections[q.section]) {
+            sections[q.section].push(q);
           }
         });
 
@@ -383,7 +287,6 @@
 
         updateKeyMetrics(quotes);
 
-        // Update status
         document.getElementById('statusDot').classList.remove('error');
         document.getElementById('statusText').textContent = 'LIVE';
         document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
@@ -395,10 +298,7 @@
       }
     }
 
-    // Initial fetch
     fetchData();
-
-    // Refresh every 60 seconds
     setInterval(fetchData, 60000);
   </script>
 </body>
