@@ -1,15 +1,5 @@
 {
   "name": "market-dashboard",
   "version": "1.0.0",
-  "scripts": {
-    "build": "echo 'Static site - no build needed'",
-    "dev": "wrangler pages dev public",
-    "deploy": "wrangler pages deploy public --project-name=market-dashboard"
-  },
-  "devDependencies": {
-    "wrangler": "^3"
-  },
-  "dependencies": {
-    "path-to-regexp": "^8.3.0"
-  }
+  "private": true
 }
