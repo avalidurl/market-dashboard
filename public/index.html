@@ -3,429 +3,384 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MarketPulse - Global Markets at a Glance</title>
-  <meta name="description" content="Real-time global market dashboard. Track stocks, bonds, commodities, and volatility in one place.">
+  <title>PULSE / Global Markets</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-base: #09090b;
-      --bg-elevated: #18181b;
-      --bg-subtle: #27272a;
-      --border: #3f3f46;
-      --border-subtle: #27272a;
-      --text: #fafafa;
-      --text-secondary: #a1a1aa;
-      --text-muted: #71717a;
-      --green: #22c55e;
-      --green-subtle: rgba(34, 197, 94, 0.15);
-      --red: #ef4444;
-      --red-subtle: rgba(239, 68, 68, 0.15);
-      --blue: #3b82f6;
-      --yellow: #eab308;
-      --orange: #f97316;
-      --purple: #a855f7;
+      --bg: #0a0a0a;
+      --bg-card: #111;
+      --bg-accent: #1a1a1a;
+      --text: #e8e4df;
+      --text-dim: #6b6860;
+      --text-muted: #3d3a35;
+      --border: #252320;
+      --accent: #f0c674;
+      --up: #7dcea0;
+      --up-bg: rgba(125, 206, 160, 0.08);
+      --down: #e57373;
+      --down-bg: rgba(229, 115, 115, 0.08);
+      --highlight: #f0c674;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-base);
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
       color: var(--text);
-      font-size: 14px;
-      line-height: 1.6;
+      font-size: 12px;
+      line-height: 1.5;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* Navigation */
-    nav {
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* Header */
+    header {
       position: sticky;
       top: 0;
-      background: rgba(9, 9, 11, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-subtle);
       z-index: 100;
+      background: linear-gradient(180deg, var(--bg) 0%, rgba(10,10,10,0.95) 100%);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .nav-content {
-      max-width: 1400px;
+    .header-inner {
+      max-width: 1600px;
       margin: 0 auto;
-      padding: 0 24px;
-      height: 64px;
+      padding: 16px 32px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
     }
 
     .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: -1px;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 18px;
+      align-items: baseline;
+      gap: 8px;
     }
 
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .logo span {
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
-    .nav-status {
+    .status {
       display: flex;
       align-items: center;
-      gap: 16px;
-      font-size: 13px;
-      color: var(--text-secondary);
+      gap: 20px;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .status-badge {
+    .live-indicator {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: var(--bg-elevated);
-      border-radius: 20px;
-      border: 1px solid var(--border-subtle);
+      gap: 8px;
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--green);
+    .pulse {
+      width: 6px;
+      height: 6px;
+      background: var(--up);
       border-radius: 50%;
-      animation: pulse 2s infinite;
+      animation: pulse 2s ease-in-out infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(125, 206, 160, 0.4); }
+      50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(125, 206, 160, 0); }
     }
 
-    /* Hero Section */
+    /* Hero */
     .hero {
-      background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-base) 100%);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 48px 24px;
-    }
-
-    .hero-content {
-      max-width: 1400px;
+      max-width: 1600px;
       margin: 0 auto;
+      padding: 60px 32px 40px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 60px;
+      align-items: end;
+      border-bottom: 1px solid var(--border);
     }
 
-    .market-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 500;
+    .hero-left h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -2px;
       margin-bottom: 16px;
     }
 
-    .market-status.positive { background: var(--green-subtle); color: var(--green); }
-    .market-status.negative { background: var(--red-subtle); color: var(--red); }
-    .market-status.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
-
-    .hero h1 {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      letter-spacing: -0.5px;
+    .hero-left h1 em {
+      font-style: italic;
+      color: var(--accent);
     }
 
-    .hero-subtitle {
-      font-size: 18px;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin-bottom: 32px;
+    .hero-tagline {
+      font-size: 13px;
+      color: var(--text-dim);
+      max-width: 400px;
+      line-height: 1.6;
     }
 
-    .key-metrics {
+    .hero-right {
       display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
+      gap: 1px;
+      background: var(--border);
     }
 
-    .key-metric {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 16px 24px;
-      min-width: 180px;
+    .hero-stat {
+      background: var(--bg);
+      padding: 20px 28px;
+      min-width: 140px;
     }
 
-    .key-metric-label {
-      font-size: 12px;
+    .hero-stat-label {
+      font-size: 10px;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
     }
 
-    .key-metric-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 24px;
-      font-weight: 600;
+    .hero-stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -1px;
     }
 
-    .key-metric-change {
-      font-size: 13px;
-      font-weight: 500;
+    .hero-stat-change {
+      font-size: 11px;
       margin-top: 4px;
     }
 
-    /* Main Content */
+    /* Main content */
     main {
-      max-width: 1400px;
+      max-width: 1600px;
       margin: 0 auto;
-      padding: 32px 24px;
+      padding: 40px 32px;
     }
 
+    /* Section */
     .section {
-      margin-bottom: 48px;
+      margin-bottom: 64px;
     }
 
     .section-header {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
     }
-
-    .section-title-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .section-icon.indices { background: rgba(59, 130, 246, 0.15); }
-    .section-icon.volatility { background: rgba(239, 68, 68, 0.15); }
-    .section-icon.bonds { background: rgba(234, 179, 8, 0.15); }
-    .section-icon.commodities { background: rgba(249, 115, 22, 0.15); }
 
     .section-title {
-      font-size: 20px;
-      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .section-subtitle {
-      font-size: 14px;
+      font-size: 11px;
       color: var(--text-muted);
+      letter-spacing: 1px;
     }
 
-    /* Cards Grid */
-    .cards-grid {
+    /* Data table */
+    .data-table {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
+      gap: 1px;
+      background: var(--border);
     }
 
-    .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 20px;
-      transition: all 0.2s ease;
-    }
-
-    .card:hover {
-      border-color: var(--border);
-      transform: translateY(-2px);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-
-    .card-symbol {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .card-name {
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-
-    .card-price-group {
-      text-align: right;
-    }
-
-    .card-price {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .card-change {
-      font-size: 14px;
-      font-weight: 500;
-      margin-top: 2px;
-    }
-
-    .positive { color: var(--green); }
-    .negative { color: var(--red); }
-
-    /* Card Metrics */
-    .card-metrics {
+    .data-row {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-subtle);
+      grid-template-columns: 160px 1fr 120px 140px 100px 180px;
+      background: var(--bg);
+      transition: background 0.15s ease;
     }
 
-    .metric {
+    .data-row:hover {
+      background: var(--bg-card);
+    }
+
+    .data-row.header-row {
+      background: var(--bg-accent);
+    }
+
+    .data-row.header-row .data-cell {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 12px 16px;
+    }
+
+    .data-cell {
+      padding: 16px;
       display: flex;
+      align-items: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .data-cell:last-child {
+      border-right: none;
+    }
+
+    .ticker-cell {
       flex-direction: column;
+      align-items: flex-start;
       gap: 2px;
     }
 
-    .metric-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
+    .ticker {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
 
-    .metric-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
+    .ticker-name {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .price-cell {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .change-cell {
+      justify-content: flex-end;
+      font-size: 12px;
       font-weight: 500;
     }
 
-    /* 52-Week Range Bar */
-    .range-container {
-      grid-column: span 2;
-      margin-top: 4px;
+    .up { color: var(--up); }
+    .down { color: var(--down); }
+
+    .ytd-cell {
+      justify-content: flex-end;
     }
 
-    .range-label {
-      font-size: 11px;
+    .volume-cell {
+      justify-content: flex-end;
+      color: var(--text-dim);
+    }
+
+    /* 52-week range */
+    .range-cell {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .range-bar-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .range-val {
+      font-size: 9px;
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-bottom: 8px;
+      width: 40px;
+    }
+
+    .range-val.high {
+      text-align: right;
     }
 
     .range-bar {
-      height: 6px;
-      background: var(--bg-subtle);
-      border-radius: 3px;
+      flex: 1;
+      height: 3px;
+      background: var(--bg-accent);
+      border-radius: 2px;
       position: relative;
-      overflow: visible;
     }
 
-    .range-fill {
+    .range-track {
       position: absolute;
       left: 0;
       top: 0;
       height: 100%;
-      background: linear-gradient(90deg, var(--red), var(--yellow), var(--green));
-      border-radius: 3px;
-      opacity: 0.3;
+      background: linear-gradient(90deg, var(--down) 0%, var(--text-muted) 50%, var(--up) 100%);
+      border-radius: 2px;
+      opacity: 0.4;
     }
 
     .range-marker {
       position: absolute;
       top: 50%;
-      width: 12px;
-      height: 12px;
+      width: 9px;
+      height: 9px;
       background: var(--text);
-      border: 2px solid var(--bg-elevated);
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-
-    .range-values {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 6px;
+      box-shadow: 0 0 0 2px var(--bg);
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 32px 24px;
-      margin-top: 48px;
-    }
-
-    .footer-content {
-      max-width: 1400px;
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      max-width: 1600px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .footer-info {
+      font-size: 10px;
       color: var(--text-muted);
-      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .footer-links {
-      display: flex;
-      gap: 24px;
-    }
-
-    .footer-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover {
-      color: var(--text);
-    }
-
-    /* Loading State */
+    /* Loading */
     .loading {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 80px;
-      color: var(--text-secondary);
+      padding: 120px;
+      gap: 16px;
+      color: var(--text-dim);
     }
 
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid var(--border-subtle);
-      border-top-color: var(--blue);
+    .loader {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 16px;
+      animation: spin 0.8s linear infinite;
     }
 
     @keyframes spin {
@@ -433,154 +388,145 @@
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
-      .hero { padding: 32px 16px; }
-      .hero h1 { font-size: 28px; }
-      .hero-subtitle { font-size: 16px; }
-      main { padding: 24px 16px; }
-      .cards-grid { grid-template-columns: 1fr; }
-      .key-metrics { gap: 12px; }
-      .key-metric { min-width: 140px; padding: 12px 16px; }
-      .key-metric-value { font-size: 20px; }
-      .nav-status span:not(.status-badge) { display: none; }
+    @media (max-width: 1200px) {
+      .data-row {
+        grid-template-columns: 140px 1fr 100px 120px 80px 160px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 40px 20px 32px;
+      }
+
+      .hero-right {
+        flex-wrap: wrap;
+      }
+
+      .header-inner, main, footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .data-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+      }
+
+      .data-row.header-row {
+        display: none;
+      }
+
+      .data-cell {
+        padding: 12px;
+      }
+
+      .ticker-cell {
+        grid-column: span 2;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--bg-accent);
+      }
+
+      .range-cell {
+        grid-column: span 2;
+      }
+    }
+
+    /* Special VIX styling */
+    .vix-warning {
+      color: var(--accent);
     }
   </style>
 </head>
 <body>
-  <nav>
-    <div class="nav-content">
-      <div class="logo">
-        <div class="logo-icon">📊</div>
-        <span>MarketPulse</span>
-      </div>
-      <div class="nav-status">
-        <span id="lastUpdate">--</span>
-        <div class="status-badge">
-          <div class="status-dot" id="statusDot"></div>
-          <span id="statusText">Connecting...</span>
+  <header>
+    <div class="header-inner">
+      <div class="logo">PULSE <span>Global Markets</span></div>
+      <div class="status">
+        <span id="lastUpdate">—</span>
+        <div class="live-indicator">
+          <div class="pulse" id="statusDot"></div>
+          <span id="statusText">Connecting</span>
         </div>
       </div>
     </div>
-  </nav>
+  </header>
 
   <section class="hero">
-    <div class="hero-content">
-      <div class="market-status neutral" id="marketStatus">Loading market data...</div>
-      <h1 id="heroTitle">Global Markets</h1>
-      <p class="hero-subtitle" id="heroSubtitle">Real-time overview of stocks, bonds, commodities, and market sentiment.</p>
-      <div class="key-metrics" id="keyMetrics"></div>
+    <div class="hero-left">
+      <h1>Markets<br/><em>at a glance</em></h1>
+      <p class="hero-tagline">Real-time tracking of global equities, fixed income, commodities, and volatility indicators.</p>
     </div>
+    <div class="hero-right" id="heroStats"></div>
   </section>
 
   <main id="main">
     <div class="loading">
-      <div class="spinner"></div>
-      <span>Loading market data...</span>
+      <div class="loader"></div>
+      <span>Loading market data</span>
     </div>
   </main>
 
   <footer>
-    <div class="footer-content">
-      <div class="footer-info">
-        Data from Yahoo Finance • Prices may be delayed up to 15 minutes
-      </div>
-      <div class="footer-links">
-        <a href="https://github.com/avalidurl/market-dashboard" target="_blank">GitHub</a>
-      </div>
-    </div>
+    <span>Data via Yahoo Finance • 15 min delay</span>
+    <span>Built with Cloudflare Workers</span>
   </footer>
 
   <script>
-    const DESCRIPTIONS = {
-      'SPX': 'Tracks 500 largest US companies',
-      'NDX': '100 largest Nasdaq stocks, tech-heavy',
-      'DJI': '30 major US industrial companies',
-      'RUT': '2000 small-cap US companies',
-      'EFA': 'Developed markets ex-US',
-      'EEM': 'Emerging markets equities',
-      'VIX': 'Market volatility / fear gauge',
-      'TLT': 'Long-term US Treasury bonds',
-      'IEF': 'Intermediate Treasury bonds',
-      'HYG': 'High-yield corporate bonds',
-      'LQD': 'Investment-grade corporate bonds',
-      'GLD': 'Gold price tracker',
-      'SLV': 'Silver price tracker',
-      'OIL': 'Crude oil prices',
-      'GAS': 'Natural gas prices',
-      'DXY': 'US Dollar strength index',
-    };
-
     const SECTIONS = {
-      indices: { title: 'Equity Indices', subtitle: 'Stock market performance', icon: '📈' },
-      volatility: { title: 'Volatility', subtitle: 'Market fear & uncertainty', icon: '⚡' },
-      bonds: { title: 'Fixed Income', subtitle: 'Bond markets & rates', icon: '🏦' },
-      commodities: { title: 'Commodities & FX', subtitle: 'Raw materials & currencies', icon: '🛢️' }
+      indices: { title: 'Equities', subtitle: 'Major indices' },
+      volatility: { title: 'Volatility', subtitle: 'Fear gauge' },
+      bonds: { title: 'Fixed Income', subtitle: 'Treasury & corporate' },
+      commodities: { title: 'Commodities', subtitle: 'Materials & FX' }
     };
 
-    function formatNum(n, d = 2) {
-      if (n == null) return '--';
+    function fmt(n, d = 2) {
+      if (n == null) return '—';
       return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
     }
 
-    function formatVol(n) {
-      if (n == null) return '--';
+    function fmtVol(n) {
+      if (n == null) return '—';
       if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
       if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-      if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+      if (n >= 1e3) return (n / 1e3).toFixed(0) + 'K';
       return n.toString();
     }
 
-    function createCard(q) {
-      const changePct = q.regularMarketChangePercent;
-      const cls = changePct > 0 ? 'positive' : changePct < 0 ? 'negative' : '';
-      const sign = changePct >= 0 ? '+' : '';
+    function createRow(q) {
+      const chg = q.regularMarketChangePercent;
+      const cls = chg > 0 ? 'up' : chg < 0 ? 'down' : '';
+      const sign = chg >= 0 ? '+' : '';
 
-      // 52-week range position
-      const range52 = q.fiftyTwoWeekHigh - q.fiftyTwoWeekLow;
-      const pos52 = range52 > 0 ? ((q.regularMarketPrice - q.fiftyTwoWeekLow) / range52) * 100 : 50;
+      const ytd = q.ytdChangePercent;
+      const ytdCls = ytd > 0 ? 'up' : ytd < 0 ? 'down' : '';
+      const ytdSign = ytd >= 0 ? '+' : '';
 
-      const ytdCls = q.ytdChangePercent > 0 ? 'positive' : q.ytdChangePercent < 0 ? 'negative' : '';
-      const ytdSign = q.ytdChangePercent >= 0 ? '+' : '';
+      const range = q.fiftyTwoWeekHigh - q.fiftyTwoWeekLow;
+      const pos = range > 0 ? ((q.regularMarketPrice - q.fiftyTwoWeekLow) / range) * 100 : 50;
 
       return `
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-symbol">${q.symbol}</div>
-              <div class="card-name">${q.displayName}</div>
-            </div>
-            <div class="card-price-group">
-              <div class="card-price">${formatNum(q.regularMarketPrice)}</div>
-              <div class="card-change ${cls}">${sign}${formatNum(changePct)}% today</div>
-            </div>
+        <div class="data-row">
+          <div class="data-cell ticker-cell">
+            <span class="ticker">${q.symbol}</span>
+            <span class="ticker-name">${q.displayName}</span>
           </div>
-          <div class="card-metrics">
-            <div class="metric">
-              <span class="metric-label">Day Range</span>
-              <span class="metric-value">${formatNum(q.regularMarketDayLow)} - ${formatNum(q.regularMarketDayHigh)}</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">YTD</span>
-              <span class="metric-value ${ytdCls}">${q.ytdChangePercent != null ? ytdSign + formatNum(q.ytdChangePercent) + '%' : '--'}</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Volume</span>
-              <span class="metric-value">${formatVol(q.regularMarketVolume)}</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Prev Close</span>
-              <span class="metric-value">${formatNum(q.regularMarketPreviousClose)}</span>
-            </div>
-            <div class="range-container">
-              <div class="range-label">52-Week Range</div>
+          <div class="data-cell price-cell">${fmt(q.regularMarketPrice)}</div>
+          <div class="data-cell change-cell ${cls}">${sign}${fmt(chg)}%</div>
+          <div class="data-cell ytd-cell ${ytdCls}">${ytd != null ? ytdSign + fmt(ytd) + '%' : '—'}</div>
+          <div class="data-cell volume-cell">${fmtVol(q.regularMarketVolume)}</div>
+          <div class="data-cell range-cell">
+            <div class="range-bar-container">
+              <span class="range-val">${fmt(q.fiftyTwoWeekLow, 0)}</span>
               <div class="range-bar">
-                <div class="range-fill" style="width: 100%"></div>
-                <div class="range-marker" style="left: ${Math.min(100, Math.max(0, pos52))}%"></div>
+                <div class="range-track" style="width: 100%"></div>
+                <div class="range-marker" style="left: ${Math.min(100, Math.max(0, pos))}%"></div>
               </div>
-              <div class="range-values">
-                <span>${formatNum(q.fiftyTwoWeekLow)}</span>
-                <span>${formatNum(q.fiftyTwoWeekHigh)}</span>
-              </div>
+              <span class="range-val high">${fmt(q.fiftyTwoWeekHigh, 0)}</span>
             </div>
           </div>
         </div>
@@ -591,18 +537,27 @@
       const cfg = SECTIONS[id];
       if (!cfg || !quotes.length) return '';
 
+      const headerRow = `
+        <div class="data-row header-row">
+          <div class="data-cell">Ticker</div>
+          <div class="data-cell">Price</div>
+          <div class="data-cell">Change</div>
+          <div class="data-cell">YTD</div>
+          <div class="data-cell">Volume</div>
+          <div class="data-cell">52W Range</div>
+        </div>
+      `;
+
       return `
         <section class="section">
           <div class="section-header">
-            <div class="section-title-group">
-              <div class="section-icon ${id}">${cfg.icon}</div>
-              <div>
-                <div class="section-title">${cfg.title}</div>
-                <div class="section-subtitle">${cfg.subtitle}</div>
-              </div>
-            </div>
+            <h2 class="section-title">${cfg.title}</h2>
+            <span class="section-subtitle">${cfg.subtitle}</span>
           </div>
-          <div class="cards-grid">${quotes.map(createCard).join('')}</div>
+          <div class="data-table">
+            ${headerRow}
+            ${quotes.map(createRow).join('')}
+          </div>
         </section>
       `;
     }
@@ -613,68 +568,57 @@
       const tlt = quotes.find(q => q.symbol === 'TLT');
       const gld = quotes.find(q => q.symbol === 'GLD');
 
-      // Market status
-      let status = 'Markets are mixed', statusCls = 'neutral';
-      if (spx) {
-        const pct = spx.regularMarketChangePercent;
-        if (pct > 1) { status = '📈 Markets rallying'; statusCls = 'positive'; }
-        else if (pct > 0) { status = '📈 Markets up'; statusCls = 'positive'; }
-        else if (pct < -1) { status = '📉 Markets selling off'; statusCls = 'negative'; }
-        else if (pct < 0) { status = '📉 Markets down'; statusCls = 'negative'; }
-      }
+      let html = '';
 
-      const statusEl = document.getElementById('marketStatus');
-      statusEl.textContent = status;
-      statusEl.className = 'market-status ' + statusCls;
-
-      // Key metrics
-      let metrics = '';
       if (spx) {
-        const cls = spx.regularMarketChangePercent >= 0 ? 'positive' : 'negative';
+        const cls = spx.regularMarketChangePercent >= 0 ? 'up' : 'down';
         const sign = spx.regularMarketChangePercent >= 0 ? '+' : '';
-        metrics += `
-          <div class="key-metric">
-            <div class="key-metric-label">S&P 500</div>
-            <div class="key-metric-value">${formatNum(spx.regularMarketPrice)}</div>
-            <div class="key-metric-change ${cls}">${sign}${formatNum(spx.regularMarketChangePercent)}%</div>
-          </div>
-        `;
-      }
-      if (vix) {
-        const cls = vix.regularMarketPrice > 25 ? 'negative' : vix.regularMarketPrice > 18 ? '' : 'positive';
-        const label = vix.regularMarketPrice > 25 ? 'High Fear' : vix.regularMarketPrice > 18 ? 'Elevated' : 'Low Fear';
-        metrics += `
-          <div class="key-metric">
-            <div class="key-metric-label">VIX (Fear)</div>
-            <div class="key-metric-value ${cls}">${formatNum(vix.regularMarketPrice)}</div>
-            <div class="key-metric-change">${label}</div>
-          </div>
-        `;
-      }
-      if (tlt) {
-        const cls = tlt.regularMarketChangePercent >= 0 ? 'positive' : 'negative';
-        const sign = tlt.regularMarketChangePercent >= 0 ? '+' : '';
-        metrics += `
-          <div class="key-metric">
-            <div class="key-metric-label">Bonds (TLT)</div>
-            <div class="key-metric-value">${formatNum(tlt.regularMarketPrice)}</div>
-            <div class="key-metric-change ${cls}">${sign}${formatNum(tlt.regularMarketChangePercent)}%</div>
-          </div>
-        `;
-      }
-      if (gld) {
-        const cls = gld.regularMarketChangePercent >= 0 ? 'positive' : 'negative';
-        const sign = gld.regularMarketChangePercent >= 0 ? '+' : '';
-        metrics += `
-          <div class="key-metric">
-            <div class="key-metric-label">Gold</div>
-            <div class="key-metric-value">${formatNum(gld.regularMarketPrice)}</div>
-            <div class="key-metric-change ${cls}">${sign}${formatNum(gld.regularMarketChangePercent)}%</div>
+        html += `
+          <div class="hero-stat">
+            <div class="hero-stat-label">S&P 500</div>
+            <div class="hero-stat-value">${fmt(spx.regularMarketPrice, 0)}</div>
+            <div class="hero-stat-change ${cls}">${sign}${fmt(spx.regularMarketChangePercent)}%</div>
           </div>
         `;
       }
 
-      document.getElementById('keyMetrics').innerHTML = metrics;
+      if (vix) {
+        const level = vix.regularMarketPrice > 25 ? 'vix-warning' : vix.regularMarketPrice > 18 ? '' : 'up';
+        const label = vix.regularMarketPrice > 25 ? 'Elevated' : vix.regularMarketPrice > 18 ? 'Normal' : 'Low';
+        html += `
+          <div class="hero-stat">
+            <div class="hero-stat-label">VIX</div>
+            <div class="hero-stat-value ${level}">${fmt(vix.regularMarketPrice, 1)}</div>
+            <div class="hero-stat-change">${label}</div>
+          </div>
+        `;
+      }
+
+      if (tlt) {
+        const cls = tlt.regularMarketChangePercent >= 0 ? 'up' : 'down';
+        const sign = tlt.regularMarketChangePercent >= 0 ? '+' : '';
+        html += `
+          <div class="hero-stat">
+            <div class="hero-stat-label">Bonds</div>
+            <div class="hero-stat-value">${fmt(tlt.regularMarketPrice, 0)}</div>
+            <div class="hero-stat-change ${cls}">${sign}${fmt(tlt.regularMarketChangePercent)}%</div>
+          </div>
+        `;
+      }
+
+      if (gld) {
+        const cls = gld.regularMarketChangePercent >= 0 ? 'up' : 'down';
+        const sign = gld.regularMarketChangePercent >= 0 ? '+' : '';
+        html += `
+          <div class="hero-stat">
+            <div class="hero-stat-label">Gold</div>
+            <div class="hero-stat-value">${fmt(gld.regularMarketPrice, 0)}</div>
+            <div class="hero-stat-change ${cls}">${sign}${fmt(gld.regularMarketChangePercent)}%</div>
+          </div>
+        `;
+      }
+
+      document.getElementById('heroStats').innerHTML = html;
     }
 
     async function fetchData() {
@@ -682,7 +626,6 @@
         const res = await fetch('/api/quotes');
         if (!res.ok) throw new Error('Fetch failed');
         const data = await res.json();
-        if (data.error) throw new Error(data.error);
 
         const quotes = data.quoteResponse?.result || [];
         const sections = { indices: [], volatility: [], bonds: [], commodities: [] };
@@ -698,14 +641,14 @@
 
         updateHero(quotes);
 
-        document.getElementById('statusDot').style.background = 'var(--green)';
+        document.getElementById('statusDot').style.background = 'var(--up)';
         document.getElementById('statusText').textContent = 'Live';
         document.getElementById('lastUpdate').textContent =
-          'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
       } catch (err) {
         console.error(err);
-        document.getElementById('statusDot').style.background = 'var(--red)';
+        document.getElementById('statusDot').style.background = 'var(--down)';
         document.getElementById('statusText').textContent = 'Error';
       }
     }
